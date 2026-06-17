@@ -15,15 +15,15 @@ extracted for standalone reuse.
 | Name | Description | Required | Default |
 | ---- | ----------- | -------- | ------- |
 | `mode` | Workflow mode ('check' or 'fix') | False | check |
-| `ref` | Manual ref override | False |  |
-| `repo` | Manual repo override | False |  |
-| `pr-base-sha` | Manual base SHA override (check mode only) | False |  |
-| `checkout-path` | Manual checkout path override | False |  |
-| `build-path` | Manual build path override | False |  |
-| `file-type` | File type for change detection (e.g., cpp, python) | False |  |
-| `include-globs` | Include globs for change detection | False |  |
-| `exclude-globs` | Exclude globs for change detection | False |  |
-| `head-ref` | Explicit head ref for change detection (overrides the resolved ref) | False |  |
+| `ref` | Manual ref override | False | |
+| `repo` | Manual repo override | False | |
+| `pr-base-sha` | Manual base SHA override (check mode only) | False | |
+| `checkout-path` | Manual checkout path override | False | |
+| `build-path` | Manual build path override | False | |
+| `file-type` | File type for change detection (e.g., cpp, python) | False | |
+| `include-globs` | Include globs for change detection | False | |
+| `exclude-globs` | Exclude globs for change detection | False | |
+| `head-ref` | Explicit head ref for change detection (overrides the resolved ref) | False | |
 
 **Outputs:**
 
