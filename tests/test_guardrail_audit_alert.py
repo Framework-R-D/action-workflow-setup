@@ -200,6 +200,10 @@ class GuardrailAlertTests(unittest.TestCase):
                 )
                 self.assertEqual(result.returncode == 0, status == "200")
                 self.assertIsNotNone(curl)
+                if status != "200":
+                    self.assertIn("Slack webhook failed (curl exit", result.stdout)
+                    self.assertIn(f"HTTP {status}", result.stdout)
+                    self.assertIn("Slack response body: ok", result.stdout)
 
     def test_payload_escapes_untrusted_values(self) -> None:
         """Messages and actor names stay data rather than executable shell input."""
