@@ -145,8 +145,13 @@ class SnapshotTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.resolve({"INPUT_HEAD_REF": BASE})
         action = (ROOT / "action.yaml").read_text()
-        self.assertIn("ref: ${{ steps.prepare.outputs.sha }}", action)
-        self.assertIn("head-ref: ${{ steps.prepare.outputs.sha }}", action)
+        detector = action.split("    - name: Run change detection\n", 1)[1].split(
+            "\n    - name:", 1
+        )[0]
+        self.assertRegex(detector, r"(?m)^        ref: \$\{\{ steps\.prepare\.outputs\.sha \}\}$")
+        self.assertRegex(
+            detector, r"(?m)^        head-ref: \$\{\{ steps\.prepare\.outputs\.sha \}\}$"
+        )
         self.assertNotIn("require(", action)
 
     def test_unknown_modes_and_invalid_nested_values_are_rejected(self) -> None:
@@ -182,6 +187,13 @@ class SnapshotTests(unittest.TestCase):
             self.resolve(
                 {"INPUT_MODE": "fix", "GITHUB_EVENT_NAME": "pull_request", "INPUT_SHA": "c" * 40}
             )
+
+    def test_internal_symlink_aliases_cannot_overlap(self) -> None:
+        """Resolve path aliases before rejecting overlapping source and build paths."""
+        (self.root / "target-src").mkdir()
+        (self.root / "target-build").symlink_to(self.root / "target-src", target_is_directory=True)
+        with self.assertRaisesRegex(ValueError, "Paths overlap"):
+            self.resolve({})
 
     def test_invalid_pr_numbers_are_rejected_before_api_calls(self) -> None:
         """Malformed event data cannot construct a different API request."""

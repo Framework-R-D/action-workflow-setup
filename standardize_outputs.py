@@ -218,7 +218,14 @@ def standardize_outputs(
         else inputs.get("INPUT_BUILD_PATH") or f"{checkout.removesuffix('-src')}-build"
     )
     build = contained_path(build_value, inputs["GITHUB_WORKSPACE"])
-    if checkout == build or checkout.startswith(build + "/") or build.startswith(checkout + "/"):
+    workspace = Path(inputs["GITHUB_WORKSPACE"]).resolve(strict=True)
+    checkout_resolved = (workspace / checkout).resolve()
+    build_resolved = (workspace / build).resolve()
+    if (
+        checkout_resolved == build_resolved
+        or checkout_resolved.is_relative_to(build_resolved)
+        or build_resolved.is_relative_to(checkout_resolved)
+    ):
         raise ValueError("Paths overlap")
     is_act = inputs.get("CHECK_IS_ACT", "") if mode == "check" else "false"
     if is_act not in {"true", "false"}:
